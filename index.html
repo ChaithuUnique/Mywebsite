@@ -194,10 +194,7 @@ async function loadData() {
 
     if (item.setting === "advance_payment") {
       settings.advance_payment = Number(item.value);
-      document.getElementById("advance").innerText = "₹" + item.value;
-
-      document.getElementById("upiLink").href =
-        `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${item.value}&cu=INR`;
+      document.getElementById("advance").innerText = item.value + "%";
     }
 
   });
@@ -209,6 +206,7 @@ function calculateTotal() {
 
   if (!qty) {
     document.getElementById("totalPrice").innerText = "₹0";
+    document.getElementById("advance").innerText = "₹0";
     return;
   }
 
@@ -219,7 +217,15 @@ function calculateTotal() {
   if (type === "Country Chicks") price = settings.country_price;
 
   let total = price * qty;
+
+  let percent = settings.advance_payment || 0;
+  let advanceAmount = (total * percent) / 100;
+
   document.getElementById("totalPrice").innerText = "₹" + total;
+  document.getElementById("advance").innerText = "₹" + advanceAmount;
+
+  document.getElementById("upiLink").href =
+    `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${advanceAmount}&cu=INR`;
 }
 
 function getLocation() {
