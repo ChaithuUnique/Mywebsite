@@ -120,7 +120,6 @@ footer {
     </div>
   </div>
 
-  <!-- AVAILABILITY -->
   <div class="availability">
     <p>🐥 Broiler: <span id="broilerStock">Loading...</span></p>
     <p>🐥 Layer: <span id="layerStock">Loading...</span></p>
@@ -134,22 +133,22 @@ footer {
 
   <div class="order-box">
 
-    <select id="type">
+    <select id="type" onchange="calculateTotal()">
       <option>Broiler Chicks</option>
       <option>Layer Chicks</option>
       <option>Country Chicks</option>
     </select>
 
-    <input type="number" id="qty" placeholder="Enter Quantity">
+    <input type="number" id="qty" placeholder="Enter Quantity" oninput="calculateTotal()">
 
-    <!-- ADDRESS -->
+    <p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
+
     <input type="text" id="location" placeholder="Enter your address or use locate button">
 
     <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
     <p><b>Advance Payment: <span id="advance">Loading...</span></b></p>
 
-    <!-- UPI -->
     <a href="upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=500&cu=INR">
       <button>Pay Advance</button>
     </a>
@@ -170,7 +169,7 @@ footer {
 let settings = {};
 
 async function loadData() {
-  const res = await fetch("https://sheetdb.io/api/v1/s4q8qn5dwd111");
+  const res = await fetch("https://sheetdb.io/api/v1/YOUR_API_ID");
   const data = await res.json();
 
   data.forEach(item => {
@@ -186,6 +185,31 @@ async function loadData() {
   document.getElementById("countryStock").innerText = settings.country_stock;
 
   document.getElementById("advance").innerText = "₹" + settings.advance_payment;
+}
+
+function calculateTotal() {
+  let type = document.getElementById("type").value;
+  let qty = document.getElementById("qty").value;
+
+  if (!qty) {
+    document.getElementById("totalPrice").innerText = "₹0";
+    return;
+  }
+
+  let price = 0;
+
+  if (type === "Broiler Chicks") {
+    price = settings.broiler_price;
+  } 
+  else if (type === "Layer Chicks") {
+    price = settings.layer_price;
+  } 
+  else if (type === "Country Chicks") {
+    price = settings.country_price;
+  }
+
+  let total = price * qty;
+  document.getElementById("totalPrice").innerText = "₹" + total;
 }
 
 function getLocation() {
@@ -206,13 +230,14 @@ function placeOrder(){
   let type = document.getElementById("type").value;
   let qty = document.getElementById("qty").value;
   let location = document.getElementById("location").value;
+  let total = document.getElementById("totalPrice").innerText;
 
   if(location === ""){
     alert("Please enter location");
     return;
   }
 
-  let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ALocation: ${location}`;
+  let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ATotal: ${total}%0ALocation: ${location}`;
 
   let whatsapp = "https://wa.me/91XXXXXXXXXX?text=" + message;
 
