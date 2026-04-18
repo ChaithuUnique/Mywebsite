@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fresh Chicks Farm</title>
+<title>Chandu Farms</title>
 
 <style>
 body {margin:0; font-family:Arial; background:#f5f5f5;}
@@ -79,8 +79,26 @@ footer {
   text-align:center;
   padding:20px;
 }
-</style>
 
+/* POPUP */
+#successPopup {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+
+.popup-box {
+  background:#fff;
+  padding:30px;
+  border-radius:10px;
+  text-align:center;
+  max-width:300px;
+}
+</style>
 </head>
 
 <body>
@@ -141,6 +159,7 @@ footer {
 
     <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
+    <label><b>Upload Payment Screenshot</b></label>
     <input type="file" id="screenshot" accept="image/*">
 
     <a id="upiLink" href="#">
@@ -156,12 +175,24 @@ footer {
 
 <footer>
   <p>📞 Call: +91 XXXXXXXXXX</p>
+  <p>📍 Location: Your Farm Address, Your City</p>
 </footer>
+
+<!-- SUCCESS POPUP -->
+<div id="successPopup">
+  <div class="popup-box">
+    <h2>🎉 Order Placed!</h2>
+    <p>Your order has been saved successfully.</p>
+    <p>Redirecting to WhatsApp...</p>
+    <button onclick="goToWhatsApp()">Go Now</button>
+  </div>
+</div>
 
 <script>
 let settings = {};
+let whatsappLink = "";
 
-// LOAD FROM PRODUCTS SHEET
+// LOAD DATA
 async function loadData() {
   const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
   const data = await res.json();
@@ -256,11 +287,12 @@ async function uploadImage() {
   return data.secure_url;
 }
 
-// SAVE TO ORDERS SHEET
+// PLACE ORDER
 async function placeOrder() {
 
   let btn = document.getElementById("orderBtn");
   btn.disabled = true;
+  btn.innerText = "Processing...";
 
   let type = document.getElementById("type").value;
   let qty = document.getElementById("qty").value;
@@ -271,12 +303,14 @@ async function placeOrder() {
   if (!location) {
     alert("Enter location");
     btn.disabled = false;
+    btn.innerText = "Confirm Order";
     return;
   }
 
   let imageURL = await uploadImage();
   if (!imageURL) {
     btn.disabled = false;
+    btn.innerText = "Confirm Order";
     return;
   }
 
@@ -293,7 +327,18 @@ async function placeOrder() {
   });
 
   let msg = `Order Details:%0AType:${type}%0AQty:${qty}%0ATotal:${total}%0AAdvance:${advance}%0ALocation:${location}%0AScreenshot:${imageURL}`;
-  window.location.href = "https://wa.me/YOUR_PHONE_NUMBER?text=" + msg;
+
+  whatsappLink = "https://wa.me/YOUR_PHONE_NUMBER?text=" + msg;
+
+  document.getElementById("successPopup").style.display = "flex";
+
+  setTimeout(() => {
+    window.location.href = whatsappLink;
+  }, 3000);
+}
+
+function goToWhatsApp() {
+  window.location.href = whatsappLink;
 }
 
 window.onload = loadData;
