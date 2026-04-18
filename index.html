@@ -91,7 +91,6 @@ footer {
   <a class="btn" href="#order">Order Now</a>
 </header>
 
-<!-- PRODUCTS -->
 <div class="section">
   <h2>Our Chicks</h2>
 
@@ -122,7 +121,6 @@ footer {
   </div>
 </div>
 
-<!-- ORDER -->
 <div class="section" id="order">
   <h2>Place Your Order</h2>
 
@@ -137,7 +135,7 @@ footer {
     <input type="number" id="qty" placeholder="Enter Quantity" oninput="calculateTotal()">
 
     <p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
-    <p><b>Advance (20%): <span id="advance">₹0</span></b></p>
+    <p><b>Advance: <span id="advance">₹0</span></b></p>
 
     <input type="text" id="location" placeholder="Enter your address">
 
@@ -158,15 +156,14 @@ footer {
 
 <footer>
   <p>📞 Call: +91 XXXXXXXXXX</p>
-  <p>📍 Your Location</p>
 </footer>
 
 <script>
 let settings = {};
 
-// LOAD DATA
+// LOAD FROM PRODUCTS SHEET
 async function loadData() {
-  const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx");
+  const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
   const data = await res.json();
 
   data.forEach(item => {
@@ -259,7 +256,7 @@ async function uploadImage() {
   return data.secure_url;
 }
 
-// PLACE ORDER
+// SAVE TO ORDERS SHEET
 async function placeOrder() {
 
   let btn = document.getElementById("orderBtn");
@@ -283,8 +280,7 @@ async function placeOrder() {
     return;
   }
 
-  // SAVE TO SHEET
-  await fetch("https://sheetdb.io/api/v1/r1fitl072sayx", {
+  await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=orders", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({
@@ -296,7 +292,6 @@ async function placeOrder() {
     })
   });
 
-  // WHATSAPP
   let msg = `Order Details:%0AType:${type}%0AQty:${qty}%0ATotal:${total}%0AAdvance:${advance}%0ALocation:${location}%0AScreenshot:${imageURL}`;
   window.location.href = "https://wa.me/YOUR_PHONE_NUMBER?text=" + msg;
 }
