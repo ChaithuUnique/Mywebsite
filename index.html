@@ -74,10 +74,8 @@ button {
   cursor:pointer;
 }
 
-#map {
-  height:300px;
-  margin:10px 0;
-  border-radius:10px;
+.locate-btn {
+  background:#007bff;
 }
 
 footer {
@@ -87,6 +85,40 @@ footer {
   padding:20px;
 }
 </style>
+
+<script>
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+
+      let mapsLink = "https://www.google.com/maps?q=" + lat + "," + lon;
+      document.getElementById("location").value = mapsLink;
+    });
+  } else {
+    alert("Location not supported");
+  }
+}
+
+function placeOrder(){
+  let type = document.getElementById("type").value;
+  let qty = document.getElementById("qty").value;
+  let location = document.getElementById("location").value;
+
+  if(location === ""){
+    alert("Please enter or select location");
+    return;
+  }
+
+  let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ALocation: ${location}`;
+
+  let whatsapp = "https://wa.me/91XXXXXXXXXX?text=" + message;
+
+  window.location.href = whatsapp;
+}
+</script>
+
 </head>
 
 <body>
@@ -143,18 +175,15 @@ footer {
 
     <input type="number" id="qty" placeholder="Enter Quantity">
 
-    <!-- ADDRESS SEARCH -->
-    <input id="searchBox" type="text" placeholder="Enter your address">
+    <!-- ADDRESS FIELD -->
+    <input type="text" id="location" placeholder="Enter your address or use locate button">
 
-    <!-- MAP -->
-    <div id="map"></div>
-
-    <!-- FINAL LOCATION -->
-    <input type="text" id="location" placeholder="Selected location" readonly>
+    <!-- LOCATE BUTTON -->
+    <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
     <p><b>Advance Payment: ₹500</b></p>
 
-    <!-- UPI PAYMENT -->
+    <!-- UPI -->
     <a href="upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=500&cu=INR">
       <button>Pay Advance</button>
     </a>
@@ -170,83 +199,6 @@ footer {
   <p>📞 Call: +91 XXXXXXXXXX</p>
   <p>📍 Your Location</p>
 </footer>
-
-<!-- GOOGLE MAPS -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
-
-<script>
-let map;
-let marker;
-let autocomplete;
-
-function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 17.3850, lng: 78.4867 },
-    zoom: 10,
-  });
-
-  const input = document.getElementById("searchBox");
-  autocomplete = new google.maps.places.Autocomplete(input);
-
-  autocomplete.bindTo("bounds", map);
-
-  autocomplete.addListener("place_changed", function () {
-    const place = autocomplete.getPlace();
-
-    if (!place.geometry) return;
-
-    map.setCenter(place.geometry.location);
-    map.setZoom(15);
-
-    if (marker) marker.setMap(null);
-
-    marker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location,
-    });
-
-    updateLocation(place.geometry.location.lat(), place.geometry.location.lng());
-  });
-
-  map.addListener("click", function (e) {
-    const lat = e.latLng.lat();
-    const lng = e.latLng.lng();
-
-    if (marker) marker.setMap(null);
-
-    marker = new google.maps.Marker({
-      position: e.latLng,
-      map: map,
-    });
-
-    updateLocation(lat, lng);
-  });
-}
-
-function updateLocation(lat, lng) {
-  const link = "https://www.google.com/maps?q=" + lat + "," + lng;
-  document.getElementById("location").value = link;
-}
-
-function placeOrder(){
-  let type = document.getElementById("type").value;
-  let qty = document.getElementById("qty").value;
-  let location = document.getElementById("location").value;
-
-  if(location === ""){
-    alert("Please select location");
-    return;
-  }
-
-  let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ALocation: ${location}`;
-
-  let whatsapp = "https://wa.me/91XXXXXXXXXX?text=" + message;
-
-  window.location.href = whatsapp;
-}
-
-window.onload = initMap;
-</script>
 
 </body>
 </html>
