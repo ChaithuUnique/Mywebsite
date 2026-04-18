@@ -7,251 +7,205 @@
 
 <style>
 body {margin:0; font-family:Arial; background:#f5f5f5;}
-
-header {
-  background:#222;
-  color:#fff;
-  text-align:center;
-  padding:50px 20px;
-}
-
-.btn {
-  background:#25D366;
-  color:white;
-  padding:10px 15px;
-  border-radius:6px;
-  text-decoration:none;
-}
-
-.section {
-  padding:30px 20px;
-  text-align:center;
-}
-
-.products {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:20px;
-}
-
-.card {
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
-  width:250px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-
-.availability {
-  background:#fff3cd;
-  padding:15px;
-  margin:20px auto;
-  max-width:500px;
-  border-radius:8px;
-}
-
-.order-box {
-  background:#fff;
-  padding:20px;
-  max-width:400px;
-  margin:auto;
-  border-radius:10px;
-}
-
-input, select {
-  width:90%;
-  padding:10px;
-  margin:10px 0;
-}
-
-button {
-  background:#28a745;
-  color:white;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.locate-btn {
-  background:#007bff;
-}
-
-footer {
-  background:#333;
-  color:white;
-  text-align:center;
-  padding:20px;
-}
+header {background:#222; color:#fff; text-align:center; padding:40px;}
+.section {padding:30px; text-align:center;}
+.products {display:flex; flex-wrap:wrap; justify-content:center; gap:20px;}
+.card {background:#fff; padding:20px; border-radius:10px; width:250px;}
+.order-box {background:#fff; padding:20px; max-width:400px; margin:auto;}
+input, select {width:90%; padding:10px; margin:10px 0;}
+button {background:#28a745; color:white; padding:12px; border:none; border-radius:6px;}
 </style>
-
 </head>
 
 <body>
 
 <header>
-  <h1>Fresh Chicks Farm</h1>
-  <p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
-  <a class="btn" href="#order">Order Now</a>
+<h1>Fresh Chicks Farm</h1>
 </header>
 
 <div class="section">
-  <h2>Our Chicks</h2>
 
-  <div class="products">
-    <div class="card">
-      <h3>Broiler Chicks</h3>
-      <p>Price: <span id="broilerPrice">Loading...</span></p>
-      <p>Min Order: 100</p>
-    </div>
-
-    <div class="card">
-      <h3>Layer Chicks</h3>
-      <p>Price: <span id="layerPrice">Loading...</span></p>
-      <p>Min Order: 100</p>
-    </div>
-
-    <div class="card">
-      <h3>Country Chicks</h3>
-      <p>Price: <span id="countryPrice">Loading...</span></p>
-      <p>Min Order: 50</p>
-    </div>
-  </div>
-
-  <div class="availability">
-    <p>🐥 Broiler: <span id="broilerStock">Loading...</span></p>
-    <p>🐥 Layer: <span id="layerStock">Loading...</span></p>
-    <p>🐥 Country: <span id="countryStock">Loading...</span></p>
-  </div>
+<div class="products">
+<div class="card">
+<h3>Broiler Chicks</h3>
+<p>Price: <span id="broilerPrice">Loading...</span></p>
+<p>Stock: <span id="broilerStock">Loading...</span></p>
 </div>
 
-<div class="section" id="order">
-  <h2>Place Your Order</h2>
-
-  <div class="order-box">
-
-    <select id="type" onchange="calculateTotal()">
-      <option>Broiler Chicks</option>
-      <option>Layer Chicks</option>
-      <option>Country Chicks</option>
-    </select>
-
-    <input type="number" id="qty" placeholder="Enter Quantity" oninput="calculateTotal()">
-
-    <p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
-
-    <input type="text" id="location" placeholder="Enter your address or use locate button">
-
-    <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
-
-    <p><b>Advance Payment: <span id="advance">₹0</span></b></p>
-
-    <a id="upiLink" href="#">
-      <button>Pay Advance</button>
-    </a>
-
-    <br><br>
-
-    <button onclick="placeOrder()">Confirm Order</button>
-
-  </div>
+<div class="card">
+<h3>Layer Chicks</h3>
+<p>Price: <span id="layerPrice">Loading...</span></p>
+<p>Stock: <span id="layerStock">Loading...</span></p>
 </div>
 
-<footer>
-  <p>📞 Call: +91 XXXXXXXXXX</p>
-  <p>📍 Your Location</p>
-</footer>
+<div class="card">
+<h3>Country Chicks</h3>
+<p>Price: <span id="countryPrice">Loading...</span></p>
+<p>Stock: <span id="countryStock">Loading...</span></p>
+</div>
+</div>
+
+</div>
+
+<div class="section">
+<h2>Place Order</h2>
+
+<div class="order-box">
+
+<select id="type" onchange="calculateTotal()">
+<option>Broiler Chicks</option>
+<option>Layer Chicks</option>
+<option>Country Chicks</option>
+</select>
+
+<input type="number" id="qty" placeholder="Enter Quantity" oninput="calculateTotal()">
+
+<p>Total: <span id="totalPrice">₹0</span></p>
+<p>Advance: <span id="advance">₹0</span></p>
+
+<input type="text" id="location" placeholder="Enter location">
+
+<input type="file" id="screenshot" accept="image/*">
+
+<a id="upiLink" href="#">
+<button type="button">Pay Advance</button>
+</a>
+
+<br><br>
+
+<button id="orderBtn" onclick="placeOrder()">Confirm Order</button>
+
+</div>
+</div>
 
 <script>
 let settings = {};
 
+// LOAD DATA FROM SHEETDB
 async function loadData() {
   const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx");
   const data = await res.json();
 
   data.forEach(item => {
-
     if (item.type === "Broiler Chicks") {
+      settings.broiler = Number(item.price);
       document.getElementById("broilerPrice").innerText = "₹" + item.price;
       document.getElementById("broilerStock").innerText = item.stock;
-      settings.broiler_price = Number(item.price);
     }
-
     if (item.type === "Layer Chicks") {
+      settings.layer = Number(item.price);
       document.getElementById("layerPrice").innerText = "₹" + item.price;
       document.getElementById("layerStock").innerText = item.stock;
-      settings.layer_price = Number(item.price);
     }
-
     if (item.type === "Country Chicks") {
+      settings.country = Number(item.price);
       document.getElementById("countryPrice").innerText = "₹" + item.price;
       document.getElementById("countryStock").innerText = item.stock;
-      settings.country_price = Number(item.price);
     }
-
     if (item.setting === "advance_payment") {
-      settings.advance_payment = Number(item.value);
+      settings.advance = Number(item.value);
     }
-
   });
-
-  calculateTotal(); // auto run after load
 }
 
+// CALCULATE TOTAL + ADVANCE
 function calculateTotal() {
   let type = document.getElementById("type").value;
-  let qty = document.getElementById("qty").value;
+  let qty = Number(document.getElementById("qty").value);
 
-  if (!qty) {
+  if (!qty || qty <= 0) {
     document.getElementById("totalPrice").innerText = "₹0";
     document.getElementById("advance").innerText = "₹0";
     return;
   }
 
-  let price = 0;
+  if (type === "Broiler Chicks" && qty < 100) {
+    alert("Minimum 100 required");
+    return;
+  }
 
-  if (type === "Broiler Chicks") price = settings.broiler_price;
-  if (type === "Layer Chicks") price = settings.layer_price;
-  if (type === "Country Chicks") price = settings.country_price;
+  if (type === "Country Chicks" && qty < 50) {
+    alert("Minimum 50 required");
+    return;
+  }
+
+  let price = settings.broiler;
+  if (type === "Layer Chicks") price = settings.layer;
+  if (type === "Country Chicks") price = settings.country;
 
   let total = price * qty;
-
-  let percent = settings.advance_payment || 0;
-  let advanceAmount = (total * percent) / 100;
+  let advanceAmt = (total * settings.advance) / 100;
 
   document.getElementById("totalPrice").innerText = "₹" + total;
-  document.getElementById("advance").innerText = "₹" + advanceAmount;
+  document.getElementById("advance").innerText = "₹" + advanceAmt;
 
   document.getElementById("upiLink").href =
-    `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${advanceAmount}&cu=INR`;
+    `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${advanceAmt}&cu=INR`;
 }
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      let lat = position.coords.latitude;
-      let lon = position.coords.longitude;
-      let mapsLink = "https://www.google.com/maps?q=" + lat + "," + lon;
-      document.getElementById("location").value = mapsLink;
-    });
+// UPLOAD IMAGE TO CLOUDINARY
+async function uploadImage() {
+  let file = document.getElementById("screenshot").files[0];
+
+  if (!file) {
+    alert("Please upload payment screenshot");
+    return null;
   }
+
+  let formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "YOUR_UPLOAD_PRESET");
+
+  let res = await fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  let data = await res.json();
+  return data.secure_url;
 }
 
-function placeOrder(){
+// PLACE ORDER
+async function placeOrder() {
+
+  let btn = document.getElementById("orderBtn");
+  btn.disabled = true;
+
   let type = document.getElementById("type").value;
   let qty = document.getElementById("qty").value;
   let location = document.getElementById("location").value;
   let total = document.getElementById("totalPrice").innerText;
+  let advance = document.getElementById("advance").innerText;
 
-  if(location === ""){
-    alert("Please enter location");
+  if (!location) {
+    alert("Enter location");
+    btn.disabled = false;
     return;
   }
 
-  let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ATotal: ${total}%0ALocation: ${location}`;
+  let imageURL = await uploadImage();
+  if (!imageURL) {
+    btn.disabled = false;
+    return;
+  }
 
-  window.location.href = "https://wa.me/91XXXXXXXXXX?text=" + message;
+  // SAVE TO SHEET
+  await fetch("https://sheetdb.io/api/v1/r1fitl072sayx", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      data: [{
+        type, qty, total, advance, location,
+        screenshot: imageURL,
+        date: new Date().toLocaleString()
+      }]
+    })
+  });
+
+  // WHATSAPP MESSAGE
+  let msg = `Order Details:%0AType: ${type}%0AQty: ${qty}%0ATotal: ${total}%0AAdvance: ${advance}%0ALocation: ${location}%0AScreenshot: ${imageURL}`;
+
+  window.location.href = "https://wa.me/YOUR_PHONE_NUMBER?text=" + msg;
 }
 
 window.onload = loadData;
