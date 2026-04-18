@@ -96,7 +96,6 @@ footer {
   <a class="btn" href="#order">Order Now</a>
 </header>
 
-<!-- PRODUCTS -->
 <div class="section">
   <h2>Our Chicks</h2>
 
@@ -127,7 +126,6 @@ footer {
   </div>
 </div>
 
-<!-- ORDER -->
 <div class="section" id="order">
   <h2>Place Your Order</h2>
 
@@ -147,7 +145,7 @@ footer {
 
     <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
-    <p><b>Advance Payment: <span id="advance">Loading...</span></b></p>
+    <p><b>Advance Payment: <span id="advance">₹0</span></b></p>
 
     <a id="upiLink" href="#">
       <button>Pay Advance</button>
@@ -194,10 +192,11 @@ async function loadData() {
 
     if (item.setting === "advance_payment") {
       settings.advance_payment = Number(item.value);
-      document.getElementById("advance").innerText = item.value + "%";
     }
 
   });
+
+  calculateTotal(); // auto run after load
 }
 
 function calculateTotal() {
