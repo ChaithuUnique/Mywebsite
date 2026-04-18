@@ -7,81 +7,164 @@
 
 <style>
 body {margin:0; font-family:Arial; background:#f5f5f5;}
-header {background:#222; color:#fff; text-align:center; padding:40px;}
-.section {padding:30px; text-align:center;}
-.products {display:flex; flex-wrap:wrap; justify-content:center; gap:20px;}
-.card {background:#fff; padding:20px; border-radius:10px; width:250px;}
-.order-box {background:#fff; padding:20px; max-width:400px; margin:auto;}
-input, select {width:90%; padding:10px; margin:10px 0;}
-button {background:#28a745; color:white; padding:12px; border:none; border-radius:6px;}
+
+header {
+  background:#222;
+  color:#fff;
+  text-align:center;
+  padding:50px 20px;
+}
+
+.btn {
+  background:#25D366;
+  color:white;
+  padding:10px 15px;
+  border-radius:6px;
+  text-decoration:none;
+}
+
+.section {padding:30px 20px; text-align:center;}
+
+.products {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+}
+
+.card {
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  width:250px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.availability {
+  background:#fff3cd;
+  padding:15px;
+  margin:20px auto;
+  max-width:500px;
+  border-radius:8px;
+}
+
+.order-box {
+  background:#fff;
+  padding:20px;
+  max-width:400px;
+  margin:auto;
+  border-radius:10px;
+}
+
+input, select {
+  width:90%;
+  padding:10px;
+  margin:10px 0;
+}
+
+button {
+  background:#28a745;
+  color:white;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.locate-btn {background:#007bff;}
+
+footer {
+  background:#333;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
 </style>
+
 </head>
 
 <body>
 
 <header>
-<h1>Fresh Chicks Farm</h1>
+  <h1>Chandu Farms</h1>
+  <p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
+  <a class="btn" href="#order">Order Now</a>
 </header>
 
+<!-- PRODUCTS -->
 <div class="section">
+  <h2>Our Chicks</h2>
 
-<div class="products">
-<div class="card">
-<h3>Broiler Chicks</h3>
-<p>Price: <span id="broilerPrice">Loading...</span></p>
-<p>Stock: <span id="broilerStock">Loading...</span></p>
+  <div class="products">
+    <div class="card">
+      <h3>Broiler Chicks</h3>
+      <p>Price: <span id="broilerPrice">Loading...</span></p>
+      <p>Min Order: 100</p>
+    </div>
+
+    <div class="card">
+      <h3>Layer Chicks</h3>
+      <p>Price: <span id="layerPrice">Loading...</span></p>
+      <p>Min Order: 100</p>
+    </div>
+
+    <div class="card">
+      <h3>Country Chicks</h3>
+      <p>Price: <span id="countryPrice">Loading...</span></p>
+      <p>Min Order: 50</p>
+    </div>
+  </div>
+
+  <div class="availability">
+    <p>🐥 Broiler: <span id="broilerStock">Loading...</span></p>
+    <p>🐥 Layer: <span id="layerStock">Loading...</span></p>
+    <p>🐥 Country: <span id="countryStock">Loading...</span></p>
+  </div>
 </div>
 
-<div class="card">
-<h3>Layer Chicks</h3>
-<p>Price: <span id="layerPrice">Loading...</span></p>
-<p>Stock: <span id="layerStock">Loading...</span></p>
+<!-- ORDER -->
+<div class="section" id="order">
+  <h2>Place Your Order</h2>
+
+  <div class="order-box">
+
+    <select id="type" onchange="calculateTotal()">
+      <option>Broiler Chicks</option>
+      <option>Layer Chicks</option>
+      <option>Country Chicks</option>
+    </select>
+
+    <input type="number" id="qty" placeholder="Enter Quantity" oninput="calculateTotal()">
+
+    <p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
+    <p><b>Advance (20%): <span id="advance">₹0</span></b></p>
+
+    <input type="text" id="location" placeholder="Enter your address">
+
+    <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
+
+    <input type="file" id="screenshot" accept="image/*">
+
+    <a id="upiLink" href="#">
+      <button type="button">Pay Advance</button>
+    </a>
+
+    <br><br>
+
+    <button id="orderBtn" onclick="placeOrder()">Confirm Order</button>
+
+  </div>
 </div>
 
-<div class="card">
-<h3>Country Chicks</h3>
-<p>Price: <span id="countryPrice">Loading...</span></p>
-<p>Stock: <span id="countryStock">Loading...</span></p>
-</div>
-</div>
-
-</div>
-
-<div class="section">
-<h2>Place Order</h2>
-
-<div class="order-box">
-
-<select id="type" onchange="calculateTotal()">
-<option>Broiler Chicks</option>
-<option>Layer Chicks</option>
-<option>Country Chicks</option>
-</select>
-
-<input type="number" id="qty" placeholder="Enter Quantity" oninput="calculateTotal()">
-
-<p>Total: <span id="totalPrice">₹0</span></p>
-<p>Advance: <span id="advance">₹0</span></p>
-
-<input type="text" id="location" placeholder="Enter location">
-
-<input type="file" id="screenshot" accept="image/*">
-
-<a id="upiLink" href="#">
-<button type="button">Pay Advance</button>
-</a>
-
-<br><br>
-
-<button id="orderBtn" onclick="placeOrder()">Confirm Order</button>
-
-</div>
-</div>
+<footer>
+  <p>📞 Call: +91 XXXXXXXXXX</p>
+  <p>📍 Your Location</p>
+</footer>
 
 <script>
 let settings = {};
 
-// LOAD DATA FROM SHEETDB
+// LOAD DATA
 async function loadData() {
   const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx");
   const data = await res.json();
@@ -108,7 +191,7 @@ async function loadData() {
   });
 }
 
-// CALCULATE TOTAL + ADVANCE
+// CALCULATE
 function calculateTotal() {
   let type = document.getElementById("type").value;
   let qty = Number(document.getElementById("qty").value);
@@ -143,20 +226,31 @@ function calculateTotal() {
     `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${advanceAmt}&cu=INR`;
 }
 
-// UPLOAD IMAGE TO CLOUDINARY
+// LOCATION
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+      document.getElementById("location").value =
+        "https://maps.google.com/?q=" + lat + "," + lon;
+    });
+  }
+}
+
+// IMAGE UPLOAD
 async function uploadImage() {
   let file = document.getElementById("screenshot").files[0];
-
   if (!file) {
-    alert("Please upload payment screenshot");
+    alert("Upload payment screenshot");
     return null;
   }
 
   let formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "YOUR_UPLOAD_PRESET");
+  formData.append("upload_preset", "payment_ss");
 
-  let res = await fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", {
+  let res = await fetch("https://api.cloudinary.com/v1_1/dobhc54tk/image/upload", {
     method: "POST",
     body: formData
   });
@@ -191,20 +285,19 @@ async function placeOrder() {
 
   // SAVE TO SHEET
   await fetch("https://sheetdb.io/api/v1/r1fitl072sayx", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
     body: JSON.stringify({
-      data: [{
+      data:[{
         type, qty, total, advance, location,
-        screenshot: imageURL,
-        date: new Date().toLocaleString()
+        screenshot:imageURL,
+        date:new Date().toLocaleString()
       }]
     })
   });
 
-  // WHATSAPP MESSAGE
-  let msg = `Order Details:%0AType: ${type}%0AQty: ${qty}%0ATotal: ${total}%0AAdvance: ${advance}%0ALocation: ${location}%0AScreenshot: ${imageURL}`;
-
+  // WHATSAPP
+  let msg = `Order Details:%0AType:${type}%0AQty:${qty}%0ATotal:${total}%0AAdvance:${advance}%0ALocation:${location}%0AScreenshot:${imageURL}`;
   window.location.href = "https://wa.me/YOUR_PHONE_NUMBER?text=" + msg;
 }
 
