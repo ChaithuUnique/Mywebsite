@@ -86,7 +86,108 @@ footer {
 }
 </style>
 
+</head>
+
+<body>
+
+<header>
+  <h1>Fresh Chicks Farm</h1>
+  <p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
+  <a class="btn" href="#order">Order Now</a>
+</header>
+
+<!-- PRODUCTS -->
+<div class="section">
+  <h2>Our Chicks</h2>
+
+  <div class="products">
+    <div class="card">
+      <h3>Broiler Chicks</h3>
+      <p>Price: <span id="broilerPrice">Loading...</span></p>
+      <p>Min Order: 100</p>
+    </div>
+
+    <div class="card">
+      <h3>Layer Chicks</h3>
+      <p>Price: <span id="layerPrice">Loading...</span></p>
+      <p>Min Order: 100</p>
+    </div>
+
+    <div class="card">
+      <h3>Country Chicks</h3>
+      <p>Price: <span id="countryPrice">Loading...</span></p>
+      <p>Min Order: 50</p>
+    </div>
+  </div>
+
+  <!-- AVAILABILITY -->
+  <div class="availability">
+    <p>🐥 Broiler: <span id="broilerStock">Loading...</span></p>
+    <p>🐥 Layer: <span id="layerStock">Loading...</span></p>
+    <p>🐥 Country: <span id="countryStock">Loading...</span></p>
+  </div>
+</div>
+
+<!-- ORDER -->
+<div class="section" id="order">
+  <h2>Place Your Order</h2>
+
+  <div class="order-box">
+
+    <select id="type">
+      <option>Broiler Chicks</option>
+      <option>Layer Chicks</option>
+      <option>Country Chicks</option>
+    </select>
+
+    <input type="number" id="qty" placeholder="Enter Quantity">
+
+    <!-- ADDRESS -->
+    <input type="text" id="location" placeholder="Enter your address or use locate button">
+
+    <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
+
+    <p><b>Advance Payment: <span id="advance">Loading...</span></b></p>
+
+    <!-- UPI -->
+    <a href="upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=500&cu=INR">
+      <button>Pay Advance</button>
+    </a>
+
+    <br><br>
+
+    <button onclick="placeOrder()">Confirm Order</button>
+
+  </div>
+</div>
+
+<footer>
+  <p>📞 Call: +91 XXXXXXXXXX</p>
+  <p>📍 Your Location</p>
+</footer>
+
 <script>
+let settings = {};
+
+async function loadData() {
+  const res = await fetch("https://sheetdb.io/api/v1/YOUR_API_ID");
+  const data = await res.json();
+
+  data.forEach(item => {
+    settings[item.setting] = item.value;
+  });
+
+  document.getElementById("broilerPrice").innerText = "₹" + settings.broiler_price;
+  document.getElementById("layerPrice").innerText = "₹" + settings.layer_price;
+  document.getElementById("countryPrice").innerText = "₹" + settings.country_price;
+
+  document.getElementById("broilerStock").innerText = settings.broiler_stock;
+  document.getElementById("layerStock").innerText = settings.layer_stock;
+  document.getElementById("countryStock").innerText = settings.country_stock;
+
+  document.getElementById("advance").innerText = "₹" + settings.advance_payment;
+}
+
 function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -107,7 +208,7 @@ function placeOrder(){
   let location = document.getElementById("location").value;
 
   if(location === ""){
-    alert("Please enter or select location");
+    alert("Please enter location");
     return;
   }
 
@@ -117,88 +218,9 @@ function placeOrder(){
 
   window.location.href = whatsapp;
 }
+
+window.onload = loadData;
 </script>
-
-</head>
-
-<body>
-
-<header>
-  <h1>Fresh Chicks Farm</h1>
-  <p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
-  <a class="btn" href="#order">Order Now</a>
-</header>
-
-<!-- PRODUCTS -->
-<div class="section">
-  <h2>Our Chicks</h2>
-
-  <div class="products">
-    <div class="card">
-      <h3>Broiler Chicks</h3>
-      <p>Day-old chicks</p>
-      <p>Min Order: 100</p>
-    </div>
-
-    <div class="card">
-      <h3>Layer Chicks</h3>
-      <p>Contact for price</p>
-      <p>Min Order: 100</p>
-    </div>
-
-    <div class="card">
-      <h3>Country Chicks</h3>
-      <p>Starting ₹35</p>
-      <p>Min Order: 50</p>
-    </div>
-  </div>
-
-  <!-- AVAILABILITY -->
-  <div class="availability">
-    <p>🐥 Broiler: Available</p>
-    <p>🐥 Layer: Limited Stock</p>
-    <p>🐥 Country: Next batch Monday</p>
-  </div>
-</div>
-
-<!-- ORDER -->
-<div class="section" id="order">
-  <h2>Place Your Order</h2>
-
-  <div class="order-box">
-
-    <select id="type">
-      <option>Broiler Chicks</option>
-      <option>Layer Chicks</option>
-      <option>Country Chicks</option>
-    </select>
-
-    <input type="number" id="qty" placeholder="Enter Quantity">
-
-    <!-- ADDRESS FIELD -->
-    <input type="text" id="location" placeholder="Enter your address or use locate button">
-
-    <!-- LOCATE BUTTON -->
-    <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
-
-    <p><b>Advance Payment: ₹500</b></p>
-
-    <!-- UPI -->
-    <a href="upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=500&cu=INR">
-      <button>Pay Advance</button>
-    </a>
-
-    <br><br>
-
-    <button onclick="placeOrder()">Confirm Order</button>
-
-  </div>
-</div>
-
-<footer>
-  <p>📞 Call: +91 XXXXXXXXXX</p>
-  <p>📍 Your Location</p>
-</footer>
 
 </body>
 </html>
