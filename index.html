@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fresh Chicks Farm</title>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
 <style>
 body {margin:0; font-family:Arial; background:#f5f5f5;}
 
@@ -76,6 +78,12 @@ button {
   cursor:pointer;
 }
 
+#map {
+  height:300px;
+  margin:10px 0;
+  border-radius:10px;
+}
+
 footer {
   background:#333;
   color:white;
@@ -89,6 +97,11 @@ function placeOrder(){
   let type = document.getElementById("type").value;
   let qty = document.getElementById("qty").value;
   let location = document.getElementById("location").value;
+
+  if(location === ""){
+    alert("Please select location on map");
+    return;
+  }
 
   let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ALocation: ${location}`;
 
@@ -140,7 +153,7 @@ function placeOrder(){
   </div>
 </div>
 
-<!-- ORDER + PAYMENT -->
+<!-- ORDER SECTION -->
 <div class="section" id="order">
   <h2>Place Your Order</h2>
 
@@ -154,18 +167,19 @@ function placeOrder(){
 
     <input type="number" id="qty" placeholder="Enter Quantity">
 
-    <input type="text" id="location" placeholder="Enter Location">
+    <!-- MAP -->
+    <div id="map"></div>
+    <input type="text" id="location" placeholder="Tap on map to select location" readonly>
 
     <p><b>Advance Payment: ₹500</b></p>
 
-    <!-- UPI PAYMENT -->
+    <!-- UPI -->
     <a href="upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=500&cu=INR">
       <button>Pay Advance</button>
     </a>
 
     <br><br>
 
-    <!-- CONFIRM ORDER -->
     <button onclick="placeOrder()">Confirm Order</button>
 
   </div>
@@ -175,6 +189,32 @@ function placeOrder(){
   <p>📞 Call: +91 XXXXXXXXXX</p>
   <p>📍 Your Location</p>
 </footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+var map = L.map('map').setView([17.3850, 78.4867], 10);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+}).addTo(map);
+
+var marker;
+
+map.on('click', function(e) {
+  var lat = e.latlng.lat;
+  var lon = e.latlng.lng;
+
+  if (marker) {
+    map.removeLayer(marker);
+  }
+
+  marker = L.marker([lat, lon]).addTo(map);
+
+  var mapsLink = "https://www.google.com/maps?q=" + lat + "," + lon;
+  document.getElementById("location").value = mapsLink;
+});
+</script>
 
 </body>
 </html>
