@@ -150,7 +150,10 @@ footer {
       <option>Country Chicks</option>
     </select>
 
-    <input type="number" id="qty" placeholder="Enter Quantity" oninput="calculateTotal()">
+    <!-- ✅ BLUR VALIDATION ADDED -->
+    <input type="number" id="qty" placeholder="Enter Quantity"
+      oninput="calculateTotal()"
+      onblur="validateQty()">
 
     <p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
     <p><b>Advance: <span id="advance">₹0</span></b></p>
@@ -159,7 +162,7 @@ footer {
 
     <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
-    <label><b>Upload Payment Screenshot</b></label>
+    <label for="screenshot"><b>Upload Payment Screenshot</b></label>
     <input type="file" id="screenshot" accept="image/*">
 
     <a id="upiLink" href="#">
@@ -178,11 +181,9 @@ footer {
   <p>📍 Location: Your Farm Address, Your City</p>
 </footer>
 
-<!-- SUCCESS POPUP -->
 <div id="successPopup">
   <div class="popup-box">
     <h2>🎉 Order Placed!</h2>
-    <p>Your order has been saved successfully.</p>
     <p>Redirecting to WhatsApp...</p>
     <button onclick="goToWhatsApp()">Go Now</button>
   </div>
@@ -230,16 +231,6 @@ function calculateTotal() {
     return;
   }
 
-  if (type === "Broiler Chicks" && qty < 100) {
-    alert("Minimum 100 required");
-    return;
-  }
-
-  if (type === "Country Chicks" && qty < 50) {
-    alert("Minimum 50 required");
-    return;
-  }
-
   let price = settings.broiler;
   if (type === "Layer Chicks") price = settings.layer;
   if (type === "Country Chicks") price = settings.country;
@@ -254,16 +245,28 @@ function calculateTotal() {
     `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${advanceAmt}&cu=INR`;
 }
 
+// ✅ NEW VALIDATION FUNCTION (ON BLUR)
+function validateQty() {
+  let type = document.getElementById("type").value;
+  let qty = Number(document.getElementById("qty").value);
+
+  if (!qty) return;
+
+  if (type === "Broiler Chicks" && qty < 100) {
+    alert("Minimum 100 required");
+  }
+
+  if (type === "Country Chicks" && qty < 50) {
+    alert("Minimum 50 required");
+  }
+}
+
 // LOCATION
 function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      let lat = position.coords.latitude;
-      let lon = position.coords.longitude;
-      document.getElementById("location").value =
-        "https://maps.google.com/?q=" + lat + "," + lon;
-    });
-  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    document.getElementById("location").value =
+      `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+  });
 }
 
 // IMAGE UPLOAD
@@ -290,12 +293,23 @@ async function uploadImage() {
 // PLACE ORDER
 async function placeOrder() {
 
+  let type = document.getElementById("type").value;
+  let qty = Number(document.getElementById("qty").value);
+
+  if (type === "Broiler Chicks" && qty < 100) {
+    alert("Minimum 100 required");
+    return;
+  }
+
+  if (type === "Country Chicks" && qty < 50) {
+    alert("Minimum 50 required");
+    return;
+  }
+
   let btn = document.getElementById("orderBtn");
   btn.disabled = true;
   btn.innerText = "Processing...";
 
-  let type = document.getElementById("type").value;
-  let qty = document.getElementById("qty").value;
   let location = document.getElementById("location").value;
   let total = document.getElementById("totalPrice").innerText;
   let advance = document.getElementById("advance").innerText;
