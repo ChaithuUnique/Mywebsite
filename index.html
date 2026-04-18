@@ -149,7 +149,7 @@ footer {
 
     <p><b>Advance Payment: <span id="advance">Loading...</span></b></p>
 
-    <a href="upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=500&cu=INR">
+    <a id="upiLink" href="#">
       <button>Pay Advance</button>
     </a>
 
@@ -173,18 +173,34 @@ async function loadData() {
   const data = await res.json();
 
   data.forEach(item => {
-    settings[item.setting] = item.value;
+
+    if (item.type === "Broiler Chicks") {
+      document.getElementById("broilerPrice").innerText = "₹" + item.price;
+      document.getElementById("broilerStock").innerText = item.stock;
+      settings.broiler_price = Number(item.price);
+    }
+
+    if (item.type === "Layer Chicks") {
+      document.getElementById("layerPrice").innerText = "₹" + item.price;
+      document.getElementById("layerStock").innerText = item.stock;
+      settings.layer_price = Number(item.price);
+    }
+
+    if (item.type === "Country Chicks") {
+      document.getElementById("countryPrice").innerText = "₹" + item.price;
+      document.getElementById("countryStock").innerText = item.stock;
+      settings.country_price = Number(item.price);
+    }
+
+    if (item.setting === "advance_payment") {
+      settings.advance_payment = Number(item.value);
+      document.getElementById("advance").innerText = "₹" + item.value;
+
+      document.getElementById("upiLink").href =
+        `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${item.value}&cu=INR`;
+    }
+
   });
-
-  document.getElementById("broilerPrice").innerText = "₹" + settings.broiler_price;
-  document.getElementById("layerPrice").innerText = "₹" + settings.layer_price;
-  document.getElementById("countryPrice").innerText = "₹" + settings.country_price;
-
-  document.getElementById("broilerStock").innerText = settings.broiler_stock;
-  document.getElementById("layerStock").innerText = settings.layer_stock;
-  document.getElementById("countryStock").innerText = settings.country_stock;
-
-  document.getElementById("advance").innerText = "₹" + settings.advance_payment;
 }
 
 function calculateTotal() {
@@ -198,15 +214,9 @@ function calculateTotal() {
 
   let price = 0;
 
-  if (type === "Broiler Chicks") {
-    price = settings.broiler_price;
-  } 
-  else if (type === "Layer Chicks") {
-    price = settings.layer_price;
-  } 
-  else if (type === "Country Chicks") {
-    price = settings.country_price;
-  }
+  if (type === "Broiler Chicks") price = settings.broiler_price;
+  if (type === "Layer Chicks") price = settings.layer_price;
+  if (type === "Country Chicks") price = settings.country_price;
 
   let total = price * qty;
   document.getElementById("totalPrice").innerText = "₹" + total;
@@ -217,12 +227,9 @@ function getLocation() {
     navigator.geolocation.getCurrentPosition(function(position) {
       let lat = position.coords.latitude;
       let lon = position.coords.longitude;
-
       let mapsLink = "https://www.google.com/maps?q=" + lat + "," + lon;
       document.getElementById("location").value = mapsLink;
     });
-  } else {
-    alert("Location not supported");
   }
 }
 
@@ -239,9 +246,7 @@ function placeOrder(){
 
   let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ATotal: ${total}%0ALocation: ${location}`;
 
-  let whatsapp = "https://wa.me/91XXXXXXXXXX?text=" + message;
-
-  window.location.href = whatsapp;
+  window.location.href = "https://wa.me/91XXXXXXXXXX?text=" + message;
 }
 
 window.onload = loadData;
