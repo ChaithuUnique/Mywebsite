@@ -68,4 +68,113 @@ input, select {
 }
 
 button {
-  background
+  background:#28a745;
+  color:white;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+footer {
+  background:#333;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
+</style>
+
+<script>
+function placeOrder(){
+  let type = document.getElementById("type").value;
+  let qty = document.getElementById("qty").value;
+  let location = document.getElementById("location").value;
+
+  let message = `Order Details:%0AType: ${type}%0AQuantity: ${qty}%0ALocation: ${location}`;
+
+  let whatsapp = "https://wa.me/91XXXXXXXXXX?text=" + message;
+
+  window.location.href = whatsapp;
+}
+</script>
+
+</head>
+
+<body>
+
+<header>
+  <h1>Fresh Chicks Farm</h1>
+  <p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
+  <a class="btn" href="#order">Order Now</a>
+</header>
+
+<!-- PRODUCTS -->
+<div class="section">
+  <h2>Our Chicks</h2>
+
+  <div class="products">
+    <div class="card">
+      <h3>Broiler Chicks</h3>
+      <p>Day-old chicks</p>
+      <p>Min Order: 100</p>
+    </div>
+
+    <div class="card">
+      <h3>Layer Chicks</h3>
+      <p>Contact for price</p>
+      <p>Min Order: 100</p>
+    </div>
+
+    <div class="card">
+      <h3>Country Chicks</h3>
+      <p>Starting ₹35</p>
+      <p>Min Order: 50</p>
+    </div>
+  </div>
+
+  <!-- AVAILABILITY -->
+  <div class="availability">
+    <p>🐥 Broiler: Available</p>
+    <p>🐥 Layer: Limited Stock</p>
+    <p>🐥 Country: Next batch Monday</p>
+  </div>
+</div>
+
+<!-- ORDER + PAYMENT -->
+<div class="section" id="order">
+  <h2>Place Your Order</h2>
+
+  <div class="order-box">
+
+    <select id="type">
+      <option>Broiler Chicks</option>
+      <option>Layer Chicks</option>
+      <option>Country Chicks</option>
+    </select>
+
+    <input type="number" id="qty" placeholder="Enter Quantity">
+
+    <input type="text" id="location" placeholder="Enter Location">
+
+    <p><b>Advance Payment: ₹500</b></p>
+
+    <!-- UPI PAYMENT -->
+    <a href="upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=500&cu=INR">
+      <button>Pay Advance</button>
+    </a>
+
+    <br><br>
+
+    <!-- CONFIRM ORDER -->
+    <button onclick="placeOrder()">Confirm Order</button>
+
+  </div>
+</div>
+
+<footer>
+  <p>📞 Call: +91 XXXXXXXXXX</p>
+  <p>📍 Your Location</p>
+</footer>
+
+</body>
+</html>
