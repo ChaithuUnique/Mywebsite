@@ -34,17 +34,23 @@ header {
 
 .card {
   background:#fff;
-  padding:20px;
+  padding:15px;
   border-radius:10px;
   width:250px;
+  height:320px;
   box-shadow:0 2px 10px rgba(0,0,0,0.1);
   cursor:pointer;
   transition:0.3s;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
 .card img {
   width:100%;
-  border-radius:10px;
+  height:150px;
+  object-fit:cover;
+  border-radius:8px;
 }
 
 .card.active {
@@ -85,27 +91,16 @@ button {
 
 button:disabled {
   background:gray;
-  cursor:not-allowed;
 }
 
 .locate-btn {
   background:#007bff;
-  display:block;
-  margin:10px auto;
 }
 
 .inline-file {
   display:flex;
-  align-items:center;
   justify-content:space-between;
   margin-top:15px;
-}
-
-footer {
-  background:#333;
-  color:white;
-  text-align:center;
-  padding:20px;
 }
 
 #successPopup {
@@ -122,8 +117,6 @@ footer {
   background:#fff;
   padding:30px;
   border-radius:10px;
-  text-align:center;
-  max-width:300px;
 }
 </style>
 </head>
@@ -132,7 +125,7 @@ footer {
 
 <header>
   <h1>Chandu Farms</h1>
-  <p>Healthy Farm-Fresh Chicks Delivered</p>
+  <p>Healthy Farm-Fresh Chicks</p>
   <a class="btn" href="#order">Order Now</a>
 </header>
 
@@ -142,24 +135,24 @@ footer {
   <div class="products">
 
     <div class="card" onclick="selectChick('Broiler Chicks',100,this)">
-      <img src="https://i.imgur.com/8Km9tLL.jpg">
+      <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4">
       <h3>Broiler Chicks</h3>
       <p>Price: <span id="broilerPrice">Loading...</span></p>
-      <p>Min Order: 100</p>
+      <p>Min: 100</p>
     </div>
 
     <div class="card" onclick="selectChick('Layer Chicks',100,this)">
-      <img src="https://i.imgur.com/2nCt3Sbl.jpg">
+      <img src="https://images.unsplash.com/photo-1591195853828-11db59a44f6b">
       <h3>Layer Chicks</h3>
       <p>Price: <span id="layerPrice">Loading...</span></p>
-      <p>Min Order: 100</p>
+      <p>Min: 100</p>
     </div>
 
     <div class="card" onclick="selectChick('Country Chicks',50,this)">
-      <img src="https://i.imgur.com/9yG3Y0F.jpg">
+      <img src="https://images.unsplash.com/photo-1568640347023-a616a30bc3bd">
       <h3>Country Chicks</h3>
       <p>Price: <span id="countryPrice">Loading...</span></p>
-      <p>Min Order: 50</p>
+      <p>Min: 50</p>
     </div>
 
   </div>
@@ -183,57 +176,42 @@ footer {
     </select>
 
     <input type="number" id="qty" placeholder="Enter Quantity"
-      oninput="calculateTotal(); togglePayButton();"
-      onblur="validateQty()">
+      oninput="calculateTotal(); togglePayButton();">
 
-    <p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
+    <p><b>Total: <span id="totalPrice">₹0</span></b></p>
     <p><b>Advance: <span id="advance">₹0</span></b></p>
 
-    <input type="text" id="location" placeholder="Enter your address">
+    <input type="text" id="location" placeholder="Enter address">
 
     <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
-    <a id="upiLink" href="#">
-      <button type="button" id="payBtn" onclick="handlePaymentClick()" disabled>Pay Advance</button>
-    </a>
+    <a id="upiLink"><button id="payBtn" disabled onclick="handlePaymentClick()">Pay Advance</button></a>
 
     <div id="uploadSection" style="display:none;">
-      <div class="inline-file">
-        <label>Upload Payment Screenshot</label>
-        <input type="file" id="screenshot" accept="image/*" onchange="showConfirmButton()">
-      </div>
+      <input type="file" id="screenshot" onchange="showConfirmButton()">
     </div>
 
-    <br><br>
-
-    <button id="orderBtn" onclick="placeOrder()" style="display:none;">
-      Confirm Order
-    </button>
+    <button id="orderBtn" style="display:none;" onclick="placeOrder()">Confirm Order</button>
 
   </div>
 </div>
 
-<footer>
-  <p>📞 Call: +91 XXXXXXXXXX</p>
-</footer>
-
 <div id="successPopup">
   <div class="popup-box">
-    <h2>🎉 Order Placed!</h2>
-    <p>Redirecting...</p>
-    <button onclick="goToWhatsApp()">Go Now</button>
+    <h2>Order Placed</h2>
   </div>
 </div>
 
 <script>
 let settings = {};
-let whatsappLink = "";
+let whatsappLink="";
 
-function selectChick(type, minQty, el) {
-  document.getElementById("type").value = type;
-  document.getElementById("qty").value = minQty;
+// SELECT CHICK
+function selectChick(type,minQty,el){
+  document.getElementById("type").value=type;
+  document.getElementById("qty").value=minQty;
 
-  document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+  document.querySelectorAll(".card").forEach(c=>c.classList.remove("active"));
   el.classList.add("active");
 
   calculateTotal();
@@ -242,48 +220,46 @@ function selectChick(type, minQty, el) {
   document.getElementById("order").scrollIntoView({behavior:"smooth"});
 }
 
-function togglePayButton() {
-  let qty = Number(document.getElementById("qty").value);
-  document.getElementById("payBtn").disabled = !qty || qty <= 0;
-}
+// LOAD DATA
+async function loadData(){
+  let res=await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
+  let data=await res.json();
 
-async function loadData() {
-  const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
-  const data = await res.json();
-
-  data.forEach(item => {
-    if (item.type === "Broiler Chicks") {
-      settings.broiler = Number(item.price);
-      broilerPrice.innerText = "₹"+item.price;
-      broilerStock.innerText = item.stock;
+  data.forEach(item=>{
+    if(item.type==="Broiler Chicks"){
+      settings.broiler=Number(item.price);
+      broilerPrice.innerText="₹"+item.price;
+      broilerStock.innerText=item.stock;
     }
-    if (item.type === "Layer Chicks") {
-      settings.layer = Number(item.price);
-      layerPrice.innerText = "₹"+item.price;
-      layerStock.innerText = item.stock;
+    if(item.type==="Layer Chicks"){
+      settings.layer=Number(item.price);
+      layerPrice.innerText="₹"+item.price;
+      layerStock.innerText=item.stock;
     }
-    if (item.type === "Country Chicks") {
-      settings.country = Number(item.price);
-      countryPrice.innerText = "₹"+item.price;
-      countryStock.innerText = item.stock;
+    if(item.type==="Country Chicks"){
+      settings.country=Number(item.price);
+      countryPrice.innerText="₹"+item.price;
+      countryStock.innerText=item.stock;
     }
-    if (item.setting === "advance_payment") {
-      settings.advance = Number(item.value);
+    if(item.setting==="advance_payment"){
+      settings.advance=Number(item.value);
     }
   });
 }
 
-function calculateTotal() {
-  let type = typeEl.value;
-  let qty = Number(qtyEl.value);
-  if (!qty) return;
+// CALCULATION
+function calculateTotal(){
+  let type=document.getElementById("type").value;
+  let qty=Number(document.getElementById("qty").value);
 
-  let price = settings.broiler;
-  if (type==="Layer Chicks") price=settings.layer;
-  if (type==="Country Chicks") price=settings.country;
+  if(!qty){ totalPrice.innerText="₹0"; advance.innerText="₹0"; return;}
 
-  let total = price*qty;
-  let adv = (total*settings.advance)/100;
+  let price=settings.broiler;
+  if(type==="Layer Chicks") price=settings.layer;
+  if(type==="Country Chicks") price=settings.country;
+
+  let total=price*qty;
+  let adv=(total*settings.advance)/100;
 
   totalPrice.innerText="₹"+total;
   advance.innerText="₹"+adv;
@@ -291,8 +267,13 @@ function calculateTotal() {
   upiLink.href=`upi://pay?pa=yourupiid@upi&am=${adv}&cu=INR`;
 }
 
-function validateQty(){}
+// ENABLE PAY
+function togglePayButton(){
+  let qty=Number(document.getElementById("qty").value);
+  payBtn.disabled=!qty;
+}
 
+// FLOW
 function handlePaymentClick(){
   uploadSection.style.display="block";
 }
@@ -301,6 +282,7 @@ function showConfirmButton(){
   if(screenshot.files[0]) orderBtn.style.display="block";
 }
 
+// LOCATION
 function getLocation(){
   navigator.geolocation.getCurrentPosition(
     pos=>location.value=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`,
@@ -308,24 +290,10 @@ function getLocation(){
   );
 }
 
-async function uploadImage(){
-  let file=screenshot.files[0];
-  if(!file) return null;
-
-  let fd=new FormData();
-  fd.append("file",file);
-  fd.append("upload_preset","payment_ss");
-
-  let res=await fetch("https://api.cloudinary.com/v1_1/dobhc54tk/image/upload",{method:"POST",body:fd});
-  let data=await res.json();
-  return data.secure_url;
-}
-
+// ORDER
 async function placeOrder(){
-  orderBtn.innerText="Uploading...";
+  orderBtn.innerText="Processing...";
   let id="ORD"+Date.now();
-
-  let img=await uploadImage();
 
   await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=orders",{
     method:"POST",
@@ -333,13 +301,8 @@ async function placeOrder(){
     body:JSON.stringify({data:[{id}]})
   });
 
-  whatsappLink="https://wa.me/YOUR_PHONE_NUMBER?text=Order%20ID:"+id;
-
   successPopup.style.display="flex";
-  setTimeout(()=>window.location.href=whatsappLink,3000);
 }
-
-function goToWhatsApp(){window.location.href=whatsappLink;}
 
 window.onload=loadData;
 </script>
