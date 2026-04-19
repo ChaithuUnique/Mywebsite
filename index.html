@@ -176,14 +176,18 @@ footer {
 
     <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
-    <div class="inline-file">
-      <label for="screenshot">Upload Payment Screenshot</label>
-      <input type="file" id="screenshot" accept="image/*">
-    </div>
-
-    <a id="upiLink" href="#" onclick="showConfirmButton()">
-      <button type="button">Pay Advance</button>
+    <!-- PAY BUTTON -->
+    <a id="upiLink" href="#">
+      <button type="button" onclick="handlePaymentClick()">Pay Advance</button>
     </a>
+
+    <!-- UPLOAD (HIDDEN INITIALLY) -->
+    <div id="uploadSection" style="display:none;">
+      <div class="inline-file">
+        <label for="screenshot">Upload Payment Screenshot</label>
+        <input type="file" id="screenshot" accept="image/*" onchange="showConfirmButton()">
+      </div>
+    </div>
 
     <br><br>
 
@@ -263,7 +267,7 @@ function calculateTotal() {
     `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${advanceAmt}&cu=INR`;
 }
 
-// BLUR VALIDATION
+// VALIDATION
 function validateQty() {
   let type = document.getElementById("type").value;
   let qty = Number(document.getElementById("qty").value);
@@ -279,17 +283,43 @@ function validateQty() {
   }
 }
 
-// SHOW CONFIRM BUTTON
-function showConfirmButton() {
-  document.getElementById("orderBtn").style.display = "block";
+// HANDLE PAYMENT CLICK
+function handlePaymentClick() {
+  document.getElementById("uploadSection").style.display = "block";
 }
 
-// LOCATION
+// SHOW CONFIRM BUTTON AFTER UPLOAD
+function showConfirmButton() {
+  let file = document.getElementById("screenshot").files[0];
+  if (file) {
+    document.getElementById("orderBtn").style.display = "block";
+  }
+}
+
+// FIXED LOCATION
 function getLocation() {
-  navigator.geolocation.getCurrentPosition(pos => {
-    document.getElementById("location").value =
-      `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-  });
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      document.getElementById("location").value =
+        `https://maps.google.com/?q=${lat},${lon}`;
+    },
+    err => {
+      alert("Location access denied or failed");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+  );
 }
 
 // IMAGE UPLOAD
