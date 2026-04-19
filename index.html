@@ -39,6 +39,17 @@ header {
   width:250px;
   box-shadow:0 2px 10px rgba(0,0,0,0.1);
   cursor:pointer;
+  transition:0.3s;
+}
+
+.card img {
+  width:100%;
+  border-radius:10px;
+}
+
+.card.active {
+  border:2px solid #28a745;
+  transform:scale(1.03);
 }
 
 .availability {
@@ -97,7 +108,6 @@ footer {
   padding:20px;
 }
 
-/* POPUP */
 #successPopup {
   display:none;
   position:fixed;
@@ -122,7 +132,7 @@ footer {
 
 <header>
   <h1>Chandu Farms</h1>
-  <p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
+  <p>Healthy Farm-Fresh Chicks Delivered</p>
   <a class="btn" href="#order">Order Now</a>
 </header>
 
@@ -131,19 +141,22 @@ footer {
 
   <div class="products">
 
-    <div class="card" onclick="selectChick('Broiler Chicks')">
+    <div class="card" onclick="selectChick('Broiler Chicks',100,this)">
+      <img src="https://i.imgur.com/8Km9tLL.jpg">
       <h3>Broiler Chicks</h3>
       <p>Price: <span id="broilerPrice">Loading...</span></p>
       <p>Min Order: 100</p>
     </div>
 
-    <div class="card" onclick="selectChick('Layer Chicks')">
+    <div class="card" onclick="selectChick('Layer Chicks',100,this)">
+      <img src="https://i.imgur.com/2nCt3Sbl.jpg">
       <h3>Layer Chicks</h3>
       <p>Price: <span id="layerPrice">Loading...</span></p>
       <p>Min Order: 100</p>
     </div>
 
-    <div class="card" onclick="selectChick('Country Chicks')">
+    <div class="card" onclick="selectChick('Country Chicks',50,this)">
+      <img src="https://i.imgur.com/9yG3Y0F.jpg">
       <h3>Country Chicks</h3>
       <p>Price: <span id="countryPrice">Loading...</span></p>
       <p>Min Order: 50</p>
@@ -202,13 +215,12 @@ footer {
 
 <footer>
   <p>📞 Call: +91 XXXXXXXXXX</p>
-  <p>📍 Location: Your Farm Address, Your City</p>
 </footer>
 
 <div id="successPopup">
   <div class="popup-box">
     <h2>🎉 Order Placed!</h2>
-    <p>Redirecting to WhatsApp...</p>
+    <p>Redirecting...</p>
     <button onclick="goToWhatsApp()">Go Now</button>
   </div>
 </div>
@@ -217,14 +229,24 @@ footer {
 let settings = {};
 let whatsappLink = "";
 
-// 👉 NEW FUNCTION
-function selectChick(type) {
+function selectChick(type, minQty, el) {
   document.getElementById("type").value = type;
+  document.getElementById("qty").value = minQty;
+
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+
   calculateTotal();
-  document.getElementById("order").scrollIntoView({ behavior: "smooth" });
+  togglePayButton();
+
+  document.getElementById("order").scrollIntoView({behavior:"smooth"});
 }
 
-// LOAD DATA
+function togglePayButton() {
+  let qty = Number(document.getElementById("qty").value);
+  document.getElementById("payBtn").disabled = !qty || qty <= 0;
+}
+
 async function loadData() {
   const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
   const data = await res.json();
@@ -232,18 +254,18 @@ async function loadData() {
   data.forEach(item => {
     if (item.type === "Broiler Chicks") {
       settings.broiler = Number(item.price);
-      document.getElementById("broilerPrice").innerText = "₹" + item.price;
-      document.getElementById("broilerStock").innerText = item.stock;
+      broilerPrice.innerText = "₹"+item.price;
+      broilerStock.innerText = item.stock;
     }
     if (item.type === "Layer Chicks") {
       settings.layer = Number(item.price);
-      document.getElementById("layerPrice").innerText = "₹" + item.price;
-      document.getElementById("layerStock").innerText = item.stock;
+      layerPrice.innerText = "₹"+item.price;
+      layerStock.innerText = item.stock;
     }
     if (item.type === "Country Chicks") {
       settings.country = Number(item.price);
-      document.getElementById("countryPrice").innerText = "₹" + item.price;
-      document.getElementById("countryStock").innerText = item.stock;
+      countryPrice.innerText = "₹"+item.price;
+      countryStock.innerText = item.stock;
     }
     if (item.setting === "advance_payment") {
       settings.advance = Number(item.value);
@@ -251,116 +273,75 @@ async function loadData() {
   });
 }
 
-// rest of your JS unchanged...
-// (keeping everything same as your previous version)
-
-function togglePayButton() {
-  let qty = Number(document.getElementById("qty").value);
-  document.getElementById("payBtn").disabled = !qty || qty <= 0;
-}
-
 function calculateTotal() {
-  let type = document.getElementById("type").value;
-  let qty = Number(document.getElementById("qty").value);
-
-  if (!qty || qty <= 0) {
-    document.getElementById("totalPrice").innerText = "₹0";
-    document.getElementById("advance").innerText = "₹0";
-    return;
-  }
-
-  let price = settings.broiler;
-  if (type === "Layer Chicks") price = settings.layer;
-  if (type === "Country Chicks") price = settings.country;
-
-  let total = price * qty;
-  let advanceAmt = (total * settings.advance) / 100;
-
-  document.getElementById("totalPrice").innerText = "₹" + total;
-  document.getElementById("advance").innerText = "₹" + advanceAmt;
-
-  document.getElementById("upiLink").href =
-    `upi://pay?pa=yourupiid@upi&pn=ChicksFarm&am=${advanceAmt}&cu=INR`;
-}
-
-function validateQty() {
-  let type = document.getElementById("type").value;
-  let qty = Number(document.getElementById("qty").value);
-
+  let type = typeEl.value;
+  let qty = Number(qtyEl.value);
   if (!qty) return;
 
-  if (type === "Broiler Chicks" && qty < 100) alert("Minimum 100 required");
-  if (type === "Country Chicks" && qty < 50) alert("Minimum 50 required");
+  let price = settings.broiler;
+  if (type==="Layer Chicks") price=settings.layer;
+  if (type==="Country Chicks") price=settings.country;
+
+  let total = price*qty;
+  let adv = (total*settings.advance)/100;
+
+  totalPrice.innerText="₹"+total;
+  advance.innerText="₹"+adv;
+
+  upiLink.href=`upi://pay?pa=yourupiid@upi&am=${adv}&cu=INR`;
 }
 
-function handlePaymentClick() {
-  document.getElementById("uploadSection").style.display = "block";
+function validateQty(){}
+
+function handlePaymentClick(){
+  uploadSection.style.display="block";
 }
 
-function showConfirmButton() {
-  let file = document.getElementById("screenshot").files[0];
-  if (file) document.getElementById("orderBtn").style.display = "block";
+function showConfirmButton(){
+  if(screenshot.files[0]) orderBtn.style.display="block";
 }
 
-function getLocation() {
+function getLocation(){
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      document.getElementById("location").value =
-        `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-    },
-    () => alert("Enable location")
+    pos=>location.value=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`,
+    ()=>alert("Enable location")
   );
 }
 
-async function uploadImage() {
-  let file = document.getElementById("screenshot").files[0];
-  if (!file) return null;
+async function uploadImage(){
+  let file=screenshot.files[0];
+  if(!file) return null;
 
-  let formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "payment_ss");
+  let fd=new FormData();
+  fd.append("file",file);
+  fd.append("upload_preset","payment_ss");
 
-  let res = await fetch("https://api.cloudinary.com/v1_1/dobhc54tk/image/upload", {
-    method: "POST",
-    body: formData
-  });
-
-  let data = await res.json();
+  let res=await fetch("https://api.cloudinary.com/v1_1/dobhc54tk/image/upload",{method:"POST",body:fd});
+  let data=await res.json();
   return data.secure_url;
 }
 
-async function placeOrder() {
-  let orderId = "ORD" + Date.now();
+async function placeOrder(){
+  orderBtn.innerText="Uploading...";
+  let id="ORD"+Date.now();
 
-  let type = document.getElementById("type").value;
-  let qty = document.getElementById("qty").value;
-  let location = document.getElementById("location").value;
-  let total = document.getElementById("totalPrice").innerText;
-  let advance = document.getElementById("advance").innerText;
+  let img=await uploadImage();
 
-  let imageURL = await uploadImage();
-
-  await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=orders", {
+  await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=orders",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
-      data:[{orderId,type,qty,total,advance,location,screenshot:imageURL}]
-    })
+    body:JSON.stringify({data:[{id}]})
   });
 
-  let msg = `Order ID:${orderId}%0AType:${type}%0AQty:${qty}%0ATotal:${total}%0AAdvance:${advance}%0ALocation:${location}`;
+  whatsappLink="https://wa.me/YOUR_PHONE_NUMBER?text=Order%20ID:"+id;
 
-  whatsappLink = "https://wa.me/YOUR_PHONE_NUMBER?text=" + msg;
-
-  document.getElementById("successPopup").style.display = "flex";
-  setTimeout(() => window.location.href = whatsappLink, 3000);
+  successPopup.style.display="flex";
+  setTimeout(()=>window.location.href=whatsappLink,3000);
 }
 
-function goToWhatsApp() {
-  window.location.href = whatsappLink;
-}
+function goToWhatsApp(){window.location.href=whatsappLink;}
 
-window.onload = loadData;
+window.onload=loadData;
 </script>
 
 </body>
