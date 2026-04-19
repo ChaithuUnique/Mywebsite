@@ -7,60 +7,34 @@
 
 <style>
 body {margin:0;font-family:Arial;background:#f5f5f5;}
-
-header {
-  background:#222;color:#fff;text-align:center;padding:50px 20px;
-}
-
+header {background:#222;color:#fff;text-align:center;padding:50px 20px;}
 .section {padding:30px;text-align:center;}
 
-.products {
-  display:flex;flex-wrap:wrap;justify-content:center;gap:20px;
-}
+.products {display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
 
 .card {
-  background:#fff;
-  width:250px;height:320px;
+  background:#fff;width:250px;height:320px;
   padding:15px;border-radius:10px;
   box-shadow:0 2px 10px rgba(0,0,0,0.1);
   cursor:pointer;
   display:flex;flex-direction:column;justify-content:space-between;
 }
-
-.card img {
-  width:100%;height:150px;object-fit:cover;border-radius:8px;
-}
-
+.card img {width:100%;height:150px;object-fit:cover;border-radius:8px;}
 .card.active {border:2px solid #28a745;}
 
-.order-box {
-  background:#fff;padding:20px;border-radius:10px;
-  max-width:400px;margin:auto;
-}
+.order-box {background:#fff;padding:20px;border-radius:10px;max-width:400px;margin:auto;}
 
-input,select {
-  width:90%;padding:10px;margin:10px 0;
-}
+input,select {width:90%;padding:10px;margin:10px 0;}
 
-button {
-  padding:12px;background:#28a745;color:#fff;
-  border:none;border-radius:8px;cursor:pointer;
-}
-
+button {padding:12px;background:#28a745;color:#fff;border:none;border-radius:8px;}
 button:disabled {background:gray;}
-
 .locate-btn {background:#007bff;}
 
 #successPopup {
-  display:none;position:fixed;top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;align-items:center;
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);justify-content:center;align-items:center;
 }
-
-.popup-box {
-  background:#fff;padding:30px;border-radius:10px;text-align:center;
-}
+.popup-box {background:#fff;padding:30px;border-radius:10px;text-align:center;}
 </style>
 </head>
 
@@ -75,7 +49,6 @@ button:disabled {background:gray;}
 <h2>Our Chicks</h2>
 
 <div class="products">
-
 <div class="card" onclick="selectChick('Broiler Chicks',100,this)">
 <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4">
 <h3>Broiler Chicks</h3>
@@ -96,7 +69,6 @@ button:disabled {background:gray;}
 <p>Price: <span id="countryPrice">Loading...</span></p>
 <p>Min: 50</p>
 </div>
-
 </div>
 
 <div class="availability">
@@ -111,7 +83,7 @@ button:disabled {background:gray;}
 
 <div class="order-box">
 
-<select id="type" onchange="calculateTotal()">
+<select id="type" onchange="calculateTotal();togglePayButton()">
 <option>Broiler Chicks</option>
 <option>Layer Chicks</option>
 <option>Country Chicks</option>
@@ -201,6 +173,12 @@ async function loadData(){
   });
 }
 
+// MIN VALIDATION
+function getMinQty(type){
+  if(type==="Country Chicks") return 50;
+  return 100;
+}
+
 // CALCULATE
 function calculateTotal(){
   let type=document.getElementById("type").value;
@@ -208,6 +186,13 @@ function calculateTotal(){
 
   if(!qty){
     totalPrice.innerText="₹0";
+    advance.innerText="₹0";
+    return;
+  }
+
+  let min=getMinQty(type);
+  if(qty < min){
+    totalPrice.innerText="Min "+min+" required";
     advance.innerText="₹0";
     return;
   }
@@ -227,30 +212,49 @@ function calculateTotal(){
 
 // ENABLE PAY
 function togglePayButton(){
+  let type=document.getElementById("type").value;
   let qty=Number(document.getElementById("qty").value);
   let location=document.getElementById("location").value.trim();
 
-  payBtn.disabled = !(qty>0 && location!=="");
+  let min=getMinQty(type);
+
+  payBtn.disabled = !(qty>=min && location!=="");
 }
 
 // PAY CLICK
 function handlePaymentClick(){
-  if(payBtn.disabled) return false;
+  if(payBtn.disabled){
+    alert("Enter valid quantity and location");
+    return false;
+  }
   uploadSection.style.display="block";
 }
 
-// LOCATION
+// LOCATION FIXED
 function getLocation(){
+  if(!navigator.geolocation){
+    alert("Geolocation not supported");
+    return;
+  }
+
   navigator.geolocation.getCurrentPosition(
     pos=>{
-      location.value=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+      let lat=pos.coords.latitude;
+      let lon=pos.coords.longitude;
+
+      location.value=`https://maps.google.com/?q=${lat},${lon}`;
       togglePayButton();
     },
-    ()=>alert("Enable location")
+    err=>{
+      if(err.code===1) alert("Permission denied");
+      else if(err.code===2) alert("Location unavailable");
+      else alert("Error getting location");
+    },
+    {enableHighAccuracy:true,timeout:10000}
   );
 }
 
-// IMAGE UPLOAD
+// IMAGE
 async function uploadImage(){
   let file=screenshot.files[0];
   if(!file) return null;
@@ -259,11 +263,7 @@ async function uploadImage(){
   fd.append("file",file);
   fd.append("upload_preset","payment_ss");
 
-  let res=await fetch("https://api.cloudinary.com/v1_1/dobhc54tk/image/upload",{
-    method:"POST",
-    body:fd
-  });
-
+  let res=await fetch("https://api.cloudinary.com/v1_1/dobhc54tk/image/upload",{method:"POST",body:fd});
   let data=await res.json();
   return data.secure_url;
 }
@@ -271,17 +271,20 @@ async function uploadImage(){
 // ORDER
 async function placeOrder(){
 
+  let type=typeEl.value;
+  let qtyVal=Number(qty.value);
+
+  let min=getMinQty(type);
+  if(qtyVal<min){
+    alert("Minimum "+min+" required");
+    return;
+  }
+
   let btn=orderBtn;
   btn.disabled=true;
   btn.innerText="Processing...";
 
   let orderId="ORD"+Date.now();
-
-  let type=type.value;
-  let qty=qty.value;
-  let locationVal=location.value;
-  let total=totalPrice.innerText;
-  let adv=advance.innerText;
 
   let img=await uploadImage();
 
@@ -290,16 +293,17 @@ async function placeOrder(){
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({
       data:[{
-        orderId,type,qty,total,advance:adv,
-        location:locationVal,
+        orderId,type,qty:qtyVal,
+        total:totalPrice.innerText,
+        advance:advance.innerText,
+        location:location.value,
         screenshot:img,
         date:new Date().toLocaleString()
       }]
     })
   });
 
-  let msg=`Order ID:${orderId}%0AType:${type}%0AQty:${qty}%0ATotal:${total}%0AAdvance:${adv}%0ALocation:${locationVal}%0AScreenshot:${img}`;
-
+  let msg=`Order ID:${orderId}%0AType:${type}%0AQty:${qtyVal}%0ALocation:${location.value}`;
   whatsappLink="https://wa.me/YOUR_PHONE_NUMBER?text="+msg;
 
   successPopup.style.display="flex";
