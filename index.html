@@ -55,7 +55,6 @@ footer {
   background:#fff;padding:30px;border-radius:10px;text-align:center;
 }
 
-/* WhatsApp */
 .whatsapp-float {
   position: fixed;bottom: 20px;right: 20px;
   background: #25D366;width: 60px;height: 60px;border-radius: 50%;
@@ -168,12 +167,10 @@ Confirm Order
 let settings = {};
 let whatsappLink = "";
 
-// MIN FUNCTION
 function getMin(type){
   return type==="Country Chicks"?50:100;
 }
 
-// SELECT
 function selectChick(type,minQty,el){
   document.getElementById("type").value=type;
   document.getElementById("qty").value=minQty;
@@ -186,7 +183,6 @@ function selectChick(type,minQty,el){
   document.getElementById("order").scrollIntoView({behavior:"smooth"});
 }
 
-// LOAD
 async function loadData(){
   const res=await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
   const data=await res.json();
@@ -213,14 +209,14 @@ async function loadData(){
   });
 }
 
-// CALC FIXED
+/* ✅ FIXED */
 function calculateTotal(){
   let type=document.getElementById("type").value;
   let qty=Number(document.getElementById("qty").value);
   let min=getMin(type);
 
   if(!qty || qty<min){
-    totalPrice.innerText="Minimum "+min+" required";
+    totalPrice.innerText="₹0";
     advance.innerText="₹0";
     return;
   }
@@ -238,7 +234,6 @@ function calculateTotal(){
   upiLink.href=`upi://pay?pa=yourupiid@upi&pn=ChanduFarms&am=${adv}&cu=INR`;
 }
 
-// VALIDATION
 function validateQty(){
   let type=document.getElementById("type").value;
   let qty=Number(document.getElementById("qty").value);
@@ -247,7 +242,6 @@ function validateQty(){
   if(qty && qty<min) alert("Minimum "+min+" required");
 }
 
-// PAY BUTTON FIXED
 function togglePayButton(){
   let type=document.getElementById("type").value;
   let qty=Number(document.getElementById("qty").value);
@@ -257,15 +251,25 @@ function togglePayButton(){
   payBtn.disabled = !(qty>=min && location!=="");
 }
 
-// LOCATION
+/* ✅ FIXED LOCATION */
 function getLocation(){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    location.value=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-    togglePayButton();
-  });
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+      document.getElementById("location").value = link;
+      togglePayButton();
+    },
+    err => {
+      alert("Location access denied or unavailable");
+    }
+  );
 }
 
-// FLOW
 function handlePaymentClick(){
   if(payBtn.disabled){
     alert("Enter valid quantity & location");
