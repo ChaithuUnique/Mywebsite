@@ -83,6 +83,13 @@ button:disabled {
   background:#007bff;
 }
 
+footer {
+  background:#333;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
+
 #successPopup {
   display:none;
   position:fixed;
@@ -98,6 +105,22 @@ button:disabled {
   padding:30px;
   border-radius:10px;
   text-align:center;
+}
+
+/* WhatsApp Button */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25D366;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 1000;
 }
 </style>
 </head>
@@ -184,6 +207,11 @@ button:disabled {
   </div>
 </div>
 
+<footer>
+  <p>📞 Call: +91 XXXXXXXXXX</p>
+  <p>📍 Location: Your Farm Address, Your City</p>
+</footer>
+
 <div id="successPopup">
   <div class="popup-box">
     <h2>🎉 Order Placed!</h2>
@@ -192,13 +220,17 @@ button:disabled {
   </div>
 </div>
 
+<!-- WhatsApp Floating Button -->
+<a href="https://wa.me/YOUR_PHONE_NUMBER" class="whatsapp-float" target="_blank">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+       style="width:30px;height:30px;">
+</a>
+
 <script>
 let settings = {};
 let whatsappLink = "";
 
-// SELECT
 function selectChick(type, minQty, el) {
-  type.value = type;
   document.getElementById("type").value = type;
   document.getElementById("qty").value = minQty;
 
@@ -210,7 +242,6 @@ function selectChick(type, minQty, el) {
   document.getElementById("order").scrollIntoView({ behavior: "smooth" });
 }
 
-// LOAD DATA
 async function loadData() {
   const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
   const data = await res.json();
@@ -237,7 +268,6 @@ async function loadData() {
   });
 }
 
-// CALCULATION (original logic restored)
 function calculateTotal() {
   let type = document.getElementById("type").value;
   let qty = Number(document.getElementById("qty").value);
@@ -261,7 +291,6 @@ function calculateTotal() {
   upiLink.href = `upi://pay?pa=yourupiid@upi&pn=ChanduFarms&am=${adv}&cu=INR`;
 }
 
-// VALIDATION
 function validateQty() {
   let type = document.getElementById("type").value;
   let qty = Number(document.getElementById("qty").value);
@@ -271,15 +300,13 @@ function validateQty() {
   if (type === "Country Chicks" && qty < 50) alert("Minimum 50 required");
 }
 
-// ENABLE PAY
 function togglePayButton() {
-  let qty = Number(qtyEl?.value || document.getElementById("qty").value);
+  let qty = Number(document.getElementById("qty").value);
   let location = document.getElementById("location").value.trim();
 
   payBtn.disabled = !(qty > 0 && location !== "");
 }
 
-// LOCATION FIX
 function getLocation() {
   navigator.geolocation.getCurrentPosition(pos => {
     let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
@@ -288,7 +315,6 @@ function getLocation() {
   });
 }
 
-// FLOW
 function handlePaymentClick() {
   if (payBtn.disabled) return false;
   uploadSection.style.display = "block";
@@ -298,7 +324,6 @@ function showConfirmButton() {
   if (screenshot.files[0]) orderBtn.style.display = "block";
 }
 
-// ORDER
 async function placeOrder() {
   successPopup.style.display = "flex";
 }
