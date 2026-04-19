@@ -7,120 +7,60 @@
 
 <style>
 body {margin:0;font-family:Arial;background:#f5f5f5;}
-
-header {
-  background:#222;
-  color:#fff;
-  text-align:center;
-  padding:50px 20px;
-}
-
+header {background:#222;color:#fff;text-align:center;padding:50px 20px;}
 .section {padding:30px;text-align:center;}
-
-.products {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:20px;
-}
+.products {display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
 
 .card {
-  background:#fff;
-  width:250px;
-  padding:15px;
-  border-radius:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
-  cursor:pointer;
+  background:#fff;width:250px;padding:15px;border-radius:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);cursor:pointer;
 }
 
 .card img {
-  width:100%;
-  height:150px;
-  object-fit:cover;
-  border-radius:8px;
+  width:100%;height:150px;object-fit:cover;border-radius:8px;
 }
 
-.card.active {
-  border:2px solid #28a745;
-}
+.card.active {border:2px solid #28a745;}
 
 .availability {
-  background:#fff3cd;
-  padding:15px;
-  margin:20px auto;
-  max-width:500px;
-  border-radius:8px;
+  background:#fff3cd;padding:15px;margin:20px auto;
+  max-width:500px;border-radius:8px;
 }
 
 .order-box {
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
-  max-width:400px;
-  margin:auto;
+  background:#fff;padding:20px;border-radius:10px;
+  max-width:400px;margin:auto;
 }
 
-input, select {
-  width:90%;
-  padding:10px;
-  margin:10px 0;
-}
+input, select {width:90%;padding:10px;margin:10px 0;}
 
 button {
-  background:#28a745;
-  color:white;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+  background:#28a745;color:white;padding:12px;
+  border:none;border-radius:8px;cursor:pointer;
 }
 
-button:disabled {
-  background:gray;
-}
-
-.locate-btn {
-  background:#007bff;
-}
+button:disabled {background:gray;}
+.locate-btn {background:#007bff;}
 
 footer {
-  background:#333;
-  color:white;
-  text-align:center;
-  padding:20px;
+  background:#333;color:white;text-align:center;padding:20px;
 }
 
 #successPopup {
-  display:none;
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;
-  align-items:center;
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);justify-content:center;align-items:center;
 }
 
 .popup-box {
-  background:#fff;
-  padding:30px;
-  border-radius:10px;
-  text-align:center;
+  background:#fff;padding:30px;border-radius:10px;text-align:center;
 }
 
-/* WhatsApp Button */
+/* WhatsApp */
 .whatsapp-float {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #25D366;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  z-index: 1000;
+  position: fixed;bottom: 20px;right: 20px;
+  background: #25D366;width: 60px;height: 60px;border-radius: 50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
 }
 </style>
 </head>
@@ -128,211 +68,225 @@ footer {
 <body>
 
 <header>
-  <h1>Chandu Farms</h1>
-  <p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
+<h1>Chandu Farms</h1>
+<p>Healthy Farm-Fresh Chicks Delivered to Your Farm</p>
 </header>
 
 <div class="section">
-  <h2>Our Chicks</h2>
+<h2>Our Chicks</h2>
 
-  <div class="products">
+<div class="products">
 
-    <div class="card" onclick="selectChick('Broiler Chicks',100,this)">
-      <img src="https://images.unsplash.com/photo-1601758123927-1961a3d3c9b3">
-      <h3>Broiler Chicks</h3>
-      <p>Price: <span id="broilerPrice">Loading...</span></p>
-      <p>Minimum Order: 100</p>
-    </div>
+<div class="card" onclick="selectChick('Broiler Chicks',100,this)">
+<img src="https://images.unsplash.com/photo-1601758123927-1961a3d3c9b3">
+<h3>Broiler Chicks</h3>
+<p>Price: <span id="broilerPrice">Loading...</span></p>
+<p>Minimum Order: 100</p>
+</div>
 
-    <div class="card" onclick="selectChick('Layer Chicks',100,this)">
-      <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb">
-      <h3>Layer Chicks</h3>
-      <p>Price: <span id="layerPrice">Loading...</span></p>
-      <p>Minimum Order: 100</p>
-    </div>
+<div class="card" onclick="selectChick('Layer Chicks',100,this)">
+<img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb">
+<h3>Layer Chicks</h3>
+<p>Price: <span id="layerPrice">Loading...</span></p>
+<p>Minimum Order: 100</p>
+</div>
 
-    <div class="card" onclick="selectChick('Country Chicks',50,this)">
-      <img src="https://images.unsplash.com/photo-1574169208507-84376144848b">
-      <h3>Country Chicks</h3>
-      <p>Price: <span id="countryPrice">Loading...</span></p>
-      <p>Minimum Order: 50</p>
-    </div>
+<div class="card" onclick="selectChick('Country Chicks',50,this)">
+<img src="https://images.unsplash.com/photo-1574169208507-84376144848b">
+<h3>Country Chicks</h3>
+<p>Price: <span id="countryPrice">Loading...</span></p>
+<p>Minimum Order: 50</p>
+</div>
 
-  </div>
+</div>
 
-  <div class="availability">
-    <p>🐥 Broiler: <span id="broilerStock">Loading...</span></p>
-    <p>🐥 Layer: <span id="layerStock">Loading...</span></p>
-    <p>🐥 Country: <span id="countryStock">Loading...</span></p>
-  </div>
+<div class="availability">
+<p>🐥 Broiler: <span id="broilerStock">Loading...</span></p>
+<p>🐥 Layer: <span id="layerStock">Loading...</span></p>
+<p>🐥 Country: <span id="countryStock">Loading...</span></p>
+</div>
 </div>
 
 <div class="section" id="order">
-  <h2>Place Your Order</h2>
+<h2>Place Your Order</h2>
 
-  <div class="order-box">
+<div class="order-box">
 
-    <select id="type" onchange="calculateTotal()">
-      <option>Broiler Chicks</option>
-      <option>Layer Chicks</option>
-      <option>Country Chicks</option>
-    </select>
+<select id="type" onchange="calculateTotal();togglePayButton()">
+<option>Broiler Chicks</option>
+<option>Layer Chicks</option>
+<option>Country Chicks</option>
+</select>
 
-    <input type="number" id="qty" placeholder="Enter Quantity"
-      oninput="calculateTotal();togglePayButton()"
-      onblur="validateQty()">
+<input type="number" id="qty" placeholder="Enter Quantity"
+oninput="calculateTotal();togglePayButton()"
+onblur="validateQty()">
 
-    <p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
-    <p><b>Advance: <span id="advance">₹0</span></b></p>
+<p><b>Total Price: <span id="totalPrice">₹0</span></b></p>
+<p><b>Advance: <span id="advance">₹0</span></b></p>
 
-    <input type="text" id="location" placeholder="Enter your address"
-      oninput="togglePayButton()">
+<input type="text" id="location" placeholder="Enter your address"
+oninput="togglePayButton()">
 
-    <button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
+<button class="locate-btn" onclick="getLocation()">📍 Locate Me</button>
 
-    <a id="upiLink" target="_blank" onclick="handlePaymentClick()">
-      <button id="payBtn" disabled>Pay Advance</button>
-    </a>
+<a id="upiLink" target="_blank" onclick="handlePaymentClick()">
+<button id="payBtn" disabled>Pay Advance</button>
+</a>
 
-    <div id="uploadSection" style="display:none;">
-      <input type="file" id="screenshot" accept="image/*" onchange="showConfirmButton()">
-    </div>
+<div id="uploadSection" style="display:none;">
+<input type="file" id="screenshot" accept="image/*" onchange="showConfirmButton()">
+</div>
 
-    <br><br>
+<br><br>
 
-    <button id="orderBtn" onclick="placeOrder()" style="display:none;">
-      Confirm Order
-    </button>
+<button id="orderBtn" onclick="placeOrder()" style="display:none;">
+Confirm Order
+</button>
 
-  </div>
+</div>
 </div>
 
 <footer>
-  <p>📞 Call: +91 XXXXXXXXXX</p>
-  <p>📍 Location: Your Farm Address, Your City</p>
+<p>📞 Call: +91 XXXXXXXXXX</p>
+<p>📍 Location: Your Farm Address, Your City</p>
 </footer>
 
 <div id="successPopup">
-  <div class="popup-box">
-    <h2>🎉 Order Placed!</h2>
-    <p>Redirecting to WhatsApp...</p>
-    <button onclick="goToWhatsApp()">Go Now</button>
-  </div>
+<div class="popup-box">
+<h2>🎉 Order Placed!</h2>
+<p>Redirecting to WhatsApp...</p>
+<button onclick="goToWhatsApp()">Go Now</button>
+</div>
 </div>
 
-<!-- WhatsApp Floating Button -->
 <a href="https://wa.me/YOUR_PHONE_NUMBER" class="whatsapp-float" target="_blank">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-       style="width:30px;height:30px;">
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" style="width:30px;height:30px;">
 </a>
 
 <script>
 let settings = {};
 let whatsappLink = "";
 
-function selectChick(type, minQty, el) {
-  document.getElementById("type").value = type;
-  document.getElementById("qty").value = minQty;
+// MIN FUNCTION
+function getMin(type){
+  return type==="Country Chicks"?50:100;
+}
 
-  document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+// SELECT
+function selectChick(type,minQty,el){
+  document.getElementById("type").value=type;
+  document.getElementById("qty").value=minQty;
+
+  document.querySelectorAll(".card").forEach(c=>c.classList.remove("active"));
   el.classList.add("active");
 
   calculateTotal();
   togglePayButton();
-  document.getElementById("order").scrollIntoView({ behavior: "smooth" });
+  document.getElementById("order").scrollIntoView({behavior:"smooth"});
 }
 
-async function loadData() {
-  const res = await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
-  const data = await res.json();
+// LOAD
+async function loadData(){
+  const res=await fetch("https://sheetdb.io/api/v1/r1fitl072sayx?sheet=products");
+  const data=await res.json();
 
-  data.forEach(item => {
-    if (item.type === "Broiler Chicks") {
-      settings.broiler = Number(item.price);
-      broilerPrice.innerText = "₹" + item.price;
-      broilerStock.innerText = item.stock;
+  data.forEach(item=>{
+    if(item.type==="Broiler Chicks"){
+      settings.broiler=item.price;
+      broilerPrice.innerText="₹"+item.price;
+      broilerStock.innerText=item.stock;
     }
-    if (item.type === "Layer Chicks") {
-      settings.layer = Number(item.price);
-      layerPrice.innerText = "₹" + item.price;
-      layerStock.innerText = item.stock;
+    if(item.type==="Layer Chicks"){
+      settings.layer=item.price;
+      layerPrice.innerText="₹"+item.price;
+      layerStock.innerText=item.stock;
     }
-    if (item.type === "Country Chicks") {
-      settings.country = Number(item.price);
-      countryPrice.innerText = "₹" + item.price;
-      countryStock.innerText = item.stock;
+    if(item.type==="Country Chicks"){
+      settings.country=item.price;
+      countryPrice.innerText="₹"+item.price;
+      countryStock.innerText=item.stock;
     }
-    if (item.setting === "advance_payment") {
-      settings.advance = Number(item.value);
+    if(item.setting==="advance_payment"){
+      settings.advance=item.value;
     }
   });
 }
 
-function calculateTotal() {
-  let type = document.getElementById("type").value;
-  let qty = Number(document.getElementById("qty").value);
+// CALC FIXED
+function calculateTotal(){
+  let type=document.getElementById("type").value;
+  let qty=Number(document.getElementById("qty").value);
+  let min=getMin(type);
 
-  if (!qty || qty <= 0) {
-    totalPrice.innerText = "₹0";
-    advance.innerText = "₹0";
+  if(!qty || qty<min){
+    totalPrice.innerText="Minimum "+min+" required";
+    advance.innerText="₹0";
     return;
   }
 
-  let price = settings.broiler;
-  if (type === "Layer Chicks") price = settings.layer;
-  if (type === "Country Chicks") price = settings.country;
+  let price=settings.broiler;
+  if(type==="Layer Chicks") price=settings.layer;
+  if(type==="Country Chicks") price=settings.country;
 
-  let total = price * qty;
-  let adv = (total * settings.advance) / 100;
+  let total=price*qty;
+  let adv=(total*settings.advance)/100;
 
-  totalPrice.innerText = "₹" + total;
-  advance.innerText = "₹" + adv;
+  totalPrice.innerText="₹"+total;
+  advance.innerText="₹"+adv;
 
-  upiLink.href = `upi://pay?pa=yourupiid@upi&pn=ChanduFarms&am=${adv}&cu=INR`;
+  upiLink.href=`upi://pay?pa=yourupiid@upi&pn=ChanduFarms&am=${adv}&cu=INR`;
 }
 
-function validateQty() {
-  let type = document.getElementById("type").value;
-  let qty = Number(document.getElementById("qty").value);
+// VALIDATION
+function validateQty(){
+  let type=document.getElementById("type").value;
+  let qty=Number(document.getElementById("qty").value);
+  let min=getMin(type);
 
-  if (type === "Broiler Chicks" && qty < 100) alert("Minimum 100 required");
-  if (type === "Layer Chicks" && qty < 100) alert("Minimum 100 required");
-  if (type === "Country Chicks" && qty < 50) alert("Minimum 50 required");
+  if(qty && qty<min) alert("Minimum "+min+" required");
 }
 
-function togglePayButton() {
-  let qty = Number(document.getElementById("qty").value);
-  let location = document.getElementById("location").value.trim();
+// PAY BUTTON FIXED
+function togglePayButton(){
+  let type=document.getElementById("type").value;
+  let qty=Number(document.getElementById("qty").value);
+  let location=document.getElementById("location").value.trim();
+  let min=getMin(type);
 
-  payBtn.disabled = !(qty > 0 && location !== "");
+  payBtn.disabled = !(qty>=min && location!=="");
 }
 
-function getLocation() {
-  navigator.geolocation.getCurrentPosition(pos => {
-    let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-    document.getElementById("location").value = link;
+// LOCATION
+function getLocation(){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    location.value=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
     togglePayButton();
   });
 }
 
-function handlePaymentClick() {
-  if (payBtn.disabled) return false;
-  uploadSection.style.display = "block";
+// FLOW
+function handlePaymentClick(){
+  if(payBtn.disabled){
+    alert("Enter valid quantity & location");
+    return false;
+  }
+  uploadSection.style.display="block";
 }
 
-function showConfirmButton() {
-  if (screenshot.files[0]) orderBtn.style.display = "block";
+function showConfirmButton(){
+  if(screenshot.files[0]) orderBtn.style.display="block";
 }
 
-async function placeOrder() {
-  successPopup.style.display = "flex";
+async function placeOrder(){
+  successPopup.style.display="flex";
 }
 
-function goToWhatsApp() {
-  window.location.href = whatsappLink;
+function goToWhatsApp(){
+  window.location.href=whatsappLink;
 }
 
-window.onload = loadData;
+window.onload=loadData;
 </script>
 
 </body>
